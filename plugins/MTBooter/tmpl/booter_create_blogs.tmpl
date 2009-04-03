@@ -1,0 +1,54 @@
+
+<mt:setvarblock name="page_title"><__trans phrase="MTBooter: QA Tool for Movable Type"></mt:setvarblock>
+<mt:include name="dialog/header.tmpl">
+
+<mt:if name="success">
+  <div id="msg-block">
+         <div id="saved-changes" class="msg msg-success"><a href="javascript:void(0)" onclick="javascript:hide('saved-changes');return false;" class="close-me"><span>close</span></a>
+            <mt:var name="success">
+         </div>
+  </div>
+</mt:if>
+
+<form method="post" action="<mt:var name="script_url">">
+<input type="hidden" name="__mode" value="menu_create_blogs" />
+<input type="hidden" name="author_id" value="<mt:var name="author_id">" />
+
+<mtapp:setting
+    id="NumberBlogs"
+    label_class="top-label"
+    label="<__trans phrase="How many blogs would you like to create?">"
+    hint="Enter the number of blogs you want to create."
+    show_hint="1">
+    <input type="text" name="NumberBlogs" value="<mt:var name="NumberBlogs">"/>
+</mtapp:setting>
+
+<mtapp:setting
+    id="AddUser"
+    label_class="top-label"
+    label="<__trans phrase="Add user with blog?">"
+    hint="Create a user who will be weblog administrator for the blog."
+    show_hint="1">
+    <input type="checkbox" name="AddUser" id="AddUser" value="1" <TMPL_IF NAME="AddUser">checked="checked"</TMPL_IF> />&nbsp;<MT_TRANS phrase="Add user?">
+</mtapp:setting>
+
+<div class="actions-bar">
+    <div class="actions-bar-inner pkg actions">	
+        <button
+            type="submit"
+            accesskey="s"
+            title="<__trans phrase="Create">"
+            class="primary-button"
+            ><__trans phrase="Create"></button>
+        <button
+            onclick="closeDialog(); return false"
+            type="submit"
+            accesskey="x"
+            title="<__trans phrase="Cancel (x)">"
+            ><__trans phrase="Cancel"></button>		
+    </div>
+</div>
+
+</form>
+
+<mt:include name="dialog/footer.tmpl">

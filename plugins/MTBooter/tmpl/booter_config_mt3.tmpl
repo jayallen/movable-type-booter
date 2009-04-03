@@ -1,0 +1,35 @@
+<fieldset>
+<div class="setting">
+    <div class="label">
+        <MT_TRANS phrase="How many years back should the entries go?">
+    </div>
+    <div class="field">
+        <input type="text" name="NumberYears" value="<TMPL_VAR NAME=NUMBERYEARS ESCAPE=HTML>" />
+        <p>Just enter a number!</p>
+    </div>
+</div>
+</fieldset>
+
+<fieldset>
+<div class="setting">
+    <div class="label">
+        <MT_TRANS phrase="Max number of tags for entry?">
+    </div>
+    <div class="field">
+        <input type="text" name="NumberTags" value="<TMPL_VAR NAME=NUMBERTAGS ESCAPE=HTML>" />
+        <p>Enter zero for no tagged entries. Please.</p>
+    </div>
+</div>
+</fieldset>
+
+<fieldset>
+<div class="setting">
+    <div class="label">
+        <MT_TRANS phrase="Seed text for random entries and comments">
+    </div>
+    <div class="field">
+        <textarea name="SeedText" rows="5" cols="100"><TMPL_VAR NAME=SEEDTEXT ESCAPE=HTML></textarea>
+        <p>Enter text that will be used by Acme::Wabby to generate random entry titles, content and comments.</p>
+    </div>
+</div>
+</fieldset>

@@ -1,0 +1,124 @@
+
+<mt:setvarblock name="page_title"><__trans phrase="MTBooter: QA Tool for Movable Type"></mt:setvarblock>
+<mt:include name="dialog/header.tmpl">
+
+<mt:if name="success">
+  <div id="msg-block">
+         <div id="saved-changes" class="msg msg-success"><a href="javascript:void(0)" onclick="javascript:hide('saved-changes');return false;" class="close-me"><span>close</span></a>
+            <mt:var name="success">
+         </div>
+  </div>
+</mt:if>
+
+<form method="post" action="<mt:var name="script_url">">
+<input type="hidden" name="__mode" value="menu_create_entries" />
+<input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+<input type="hidden" name="author_id" value="<mt:var name="author_id">" />
+
+<mtapp:setting
+    id="NumberEntries"
+    label_class="top-label"
+    label="<__trans phrase="How many entries would you like to create?">"
+    hint="Enter the number of entries you want to create, fool!"
+    show_hint="1">
+    <input type="text" name="NumberEntries" value="<mt:var name="NumberEntries">"/>
+</mtapp:setting>
+
+<!--
+<mtapp:setting
+    id="NumberPages"
+    label_class="top-label"
+    label="<__trans phrase="How many Pages would you like to create?">"
+    hint="Pages, not pages, got it?"
+    show_hint="1">
+    <input type="text" name="NumberPages" value="<mt:var name="NumberPages">"/>
+</mtapp:setting>
+
+
+<mtapp:setting
+    id="NumberCats"
+    label_class="top-label"
+    label="<__trans phrase="How many top-level categories would you like to create?">"
+    hint="Categories are like tags, only hierarchical and not as cool."
+    show_hint="1">
+    <input type="text" name="NumberCats" value="<mt:var name="NumberCats">"/>
+</mtapp:setting>
+
+<mtapp:setting
+    id="ClearEntries"
+    label_class="top-label"
+    label="<__trans phrase="Clear existing entries?">"
+    hint="We don't recommend using this feature with production MT installs unless you are interested in taking a long, unpaid vacation."
+    show_hint="1">
+    <input type="checkbox" name="ClearEntries" id="ClearEntries" value="1" <TMPL_IF NAME="EXCERPT_ONLY">checked="checked"</TMPL_IF> />&nbsp;<MT_TRANS phrase="Clear entries?">
+</mtapp:setting>-->
+
+<mtapp:setting
+    id="AddCategories"
+    label_class="top-label"
+    label="<__trans phrase="Add categories">"
+    hint="Will add a random number of categories and sub-categories to the entries that are created."
+    show_hint="1">
+    <input type="checkbox" name="AddCategories" id="AddCategories" value="1" <TMPL_IF NAME="EXCERPT_ONLY">checked="checked"</TMPL_IF> />&nbsp;<MT_TRANS phrase="Add categories">
+</mtapp:setting>
+
+<mtapp:setting
+    id="AddComments"
+    label_class="top-label"
+    label="<__trans phrase="Add comments">"
+    hint="Will add a random number of comments and comment replies to some of the entries that are created."
+    show_hint="1">
+    <input type="checkbox" name="AddComments" id="AddComments" value="1" <TMPL_IF NAME="EXCERPT_ONLY">checked="checked"</TMPL_IF> />&nbsp;<MT_TRANS phrase="Add comments">
+</mtapp:setting>
+
+<mtapp:setting
+    id="AddCFData"
+    label_class="top-label"
+    label="<__trans phrase="Add Custom Fields data">"
+    hint="Will add randomly generated data to all entry custom fields."
+    show_hint="1">
+    <input type="checkbox" name="AddCFData" id="AddCFData" value="1" <TMPL_IF NAME="EXCERPT_ONLY">checked="checked"</TMPL_IF> />&nbsp;<MT_TRANS phrase="Add Custom Fields data">
+</mtapp:setting>
+
+<mtapp:setting
+    id="RateEntries"
+    label_class="top-label"
+    label="<__trans phrase="Rate entries">"
+    hint="Will assign random scores to some of the entries that are created."
+    show_hint="1">
+    <input type="checkbox" name="RateEntries" id="RateEntries" value="1" <TMPL_IF NAME="EXCERPT_ONLY">checked="checked"</TMPL_IF> />&nbsp;<MT_TRANS phrase="Rate entries?">
+</mtapp:setting>
+
+<mtapp:setting
+	id="RatingType"
+	label="<__trans phrase="Rating System">"
+    required="0">
+	<select name="RatingType" id="RatingType">
+	    <option value="binary"<mt:if name="text"> selected="selected"</mt:if>><__trans phrase="Binary (Favorite)"></option>
+		<option value="trinary"<mt:if name="text"> selected="selected"</mt:if>><__trans phrase="Trinary (yay/nay/meh)"></option>
+	    <option value="fivestar"<mt:if name="text"> selected="selected"</mt:if>><__trans phrase="Five Star"></option>
+	    <option value="onetoten"<mt:if name="text"> selected="selected"</mt:if>><__trans phrase="One to Ten"></option>
+	    <option value="onetohundred"<mt:if name="text"> selected="selected"</mt:if>><__trans phrase="One to Hundred"></option>
+	</select>
+</mtapp:setting>
+
+<div class="actions-bar">
+    <div class="actions-bar-inner pkg actions">	
+        <button
+            type="submit"
+            accesskey="s"
+            title="<__trans phrase="Create">"
+            class="primary-button"
+            ><__trans phrase="Create"></button>
+        <button
+            onclick="closeDialog(); return false"
+            type="submit"
+            accesskey="x"
+            title="<__trans phrase="Cancel (x)">"
+            ><__trans phrase="Cancel"></button>		
+    </div>
+</div>
+
+</form>
+
+<mt:include name="dialog/footer.tmpl">

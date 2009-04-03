@@ -1,0 +1,26 @@
+<mtapp:setting
+    id="NumberYears"
+    label_class="top-label"
+    label="<__trans phrase="How many years back should the entries go?">"
+    hint="Just enter a number!"
+    show_hint="1">
+    <input type="text" name="NumberYears" value="<mt:var name="NumberYears">"/>
+</mtapp:setting>
+
+<mtapp:setting
+    id="NumberTags"
+    label_class="top-label"
+    label="<__trans phrase="Max number of tags for entry?">"
+    hint="Enter zero for no tagged entries. Please."
+    show_hint="1">
+    <input type="text" name="NumberTags" value="<mt:var name="NumberTags">"/>
+</mtapp:setting>
+
+<mtapp:setting
+    id="SeedText"
+    label_class="top-label"
+    label="<__trans phrase="Seed text for random entries and comments">"
+    hint="Enter text that will be used by Acme::Wabby to generate random entry titles, content and comments."
+    show_hint="1">
+    <textarea name="SeedText" rows="5" cols="100"><mt:var name="SeedText"></textarea>
+</mtapp:setting>
