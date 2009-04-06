@@ -13,6 +13,9 @@ use MT::Permission;
 @EXPORT = qw( create_category create_entries create_demo create_blog create_categories add_forums create_users create_user_set_for_blog 
 add_categories_to_entries add_trackbacks_to_entries add_trackback_to_entry add_assets_to_blog create_blogs create_custom_fields_for_blog add_custom_fields_to_blog);
 
+our $g_DefaultPassword = "test";
+our $g_UserPrefix = "testuser"; #Used in create_user_set. Here until textbox is added to input form;
+
 sub add_category_to_entry {
     #my $class = shift;
     my ($blog_id, $entry_id, $category_id, $is_primary) = @_;
@@ -633,7 +636,7 @@ sub create_user {
 
     $author->email($email);
 
-    $author->set_password('booter27');
+    $author->set_password($g_DefaultPassword);
 
     $author->save
 
@@ -703,13 +706,12 @@ sub getLastName {
 
 }
 
-sub findAuthor() {
+sub findAuthor($) {
 
     my $username = shift;
 
     #try to load author with that nickname
     use MT::Author;
-
     my $author = MT::Author->load( { name => $username } );
 
     if ($author) {
@@ -724,13 +726,21 @@ sub findAuthor() {
     }
 
 }
+sub trim($)
+{
+	# this takes a reference
+	my $string = shift;
+	$$string =~ s/^\s+|\s+$//g;
+	return $string;
+}
 
 sub create_user_set_for_blog {
 
     my $blog_id = shift;
-
-    #load up the blog
-
+	my $numberUsers = shift;
+	my $userType = shift;
+	
+	#load up the blog
     use MT::Blog;
 
     my $blog = MT::Blog->load($blog_id);
@@ -742,30 +752,72 @@ sub create_user_set_for_blog {
         require MT::Role;
         @Roles = MT::Role->load();
     }
+	
+	if ($numberUsers)
+	{
+		trim(\$numberUsers)
+	}
+	else
+	{
+		$numberUsers = @Roles;
+	}
+	if ($userType)
+	{
+		trim(\$userType)
+	}
 
     # FIXME: create an alternative user set for MT 3.x
 
-    #iterate through the roles and create a user for each
+    # create $numberUsers, if undefined then a user for each role is created
+    if($userType && $userType ne "") # i can't remember which
+	{
+		require MT::Role;
+	    my $role = MT::Role->load( { name => $userType } );
+		if ($role)
+		{ 
+			for ( my $j = 0; $j < $numberUsers; $j++)
+			{
+				my $username = $g_UserPrefix . $j;
+				#get random first name
+				my $FirstName = getFirstName();
+				#create user
+				if ( ! findAuthor($username) ) 
+				{
+					my $author = create_user( $username, "$FirstName $userType" );				
+					#create association
+					require MT::Association;
+					MT::Association->link( $author => $role => $blog );
+				}
+			}
+		}
+		else
+		{
+			#how do i raise an error here?
+		}
+	}
+	else
+	{
+		foreach my $role (@Roles) 
+		{
+			my $role_name = $role->name;
+			my $username = lc($role_name);
+			$username =~ s/ //;
 
-    foreach my $role (@Roles) {
+			#get random first name
+			my $FirstName = getFirstName();
 
-        my $role_name = $role->name;
+			#create user
+			my $author = create_user( $username, "$FirstName $role_name" );
 
-        my $username = lc($role_name);
+			#create association
+			require MT::Association;
+			MT::Association->link( $author => $role => $blog );
+		}
+	}
+	
+} #end sub
 
-        $username =~ s/ //;
 
-        #get random first name
-        my $FirstName = getFirstName();
-
-        #create user
-        my $author = create_user( $username, "$FirstName $role_name" );
-
-        #create association
-        require MT::Association;
-        MT::Association->link( $author => $role => $blog );
-    }
-}
 
 sub add_categories_to_entries {
   my $blog_id = shift;

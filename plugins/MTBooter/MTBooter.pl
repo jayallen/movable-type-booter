@@ -6,7 +6,7 @@ package MT::Plugin::MTBooter;
 use strict;
 use base qw( MT::Plugin );
 
-our $VERSION = '0.14.0';
+our $VERSION = '0.14.1';
 
 my $dickens = "It was the best of times, it was the worst of times,
 it was the age of wisdom, it was the age of foolishness,
@@ -259,8 +259,16 @@ sub init_registry {
 			args => { _type => "menu_create_custom_fields" },
 			permission => 'administer',
 			view => "blog",
-		  }
-		}
+		  },
+		  	'create:booter16' => {
+            label => 'Create User Set',
+			dialog => 'show_create_userset_dialog',
+			order => 311,
+			args => { _type => "show_create_userset_dialog" },
+			permission => 'administer',
+			view => "blog",
+		  },
+		},
 	  },
 	},
 	 methods => {
@@ -280,6 +288,7 @@ sub init_registry {
 		menu_manage_template_mappings => '$MTBooter::MTBooter::App::CMS::menu_manage_template_mappings',
 		menu_manage_module_caches => '$MTBooter::MTBooter::App::CMS::menu_manage_module_caches',
 		menu_create_baseline_blog => '$MTBooter::MTBooter::App::CMS::menu_create_baseline_blog',
+		show_create_userset_dialog => '$MTBooter::MTBooter::App::CMS::show_create_userset_dialog',
 	 },
   });  
 

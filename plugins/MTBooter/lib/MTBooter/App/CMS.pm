@@ -212,8 +212,11 @@ sub menu_create_user_set {
     my $plugin = MT::Plugin::MTBooter->instance;
 
     my $blog_id = $app->{ query }->param('blog_id');
+    my $NumberUsers = $app->{ query }->param('NumberUsers');
+    my $UserType = $app->{ query }->param('UserType');
+	
 
-    create_user_set_for_blog($blog_id);
+    create_user_set_for_blog($blog_id,$NumberUsers,$UserType);
 
     my $tmpl = $plugin->load_tmpl('booter_confirm.tmpl');
 
@@ -462,6 +465,20 @@ sub show_blogs_dialog {
     #set defaults if they aren't defined
     $params->{ 'NumberBlogs' } = "5";
     $params->{ 'AddUser' } = "1";
+
+    return $app->build_page( $tmpl, $params );
+}
+
+sub show_create_userset_dialog {
+    my $app = shift;
+
+    my $tmpl = $app->load_tmpl('booter_create_userset.tmpl');
+
+    my $params;
+
+    #set defaults if they aren't defined
+    $params->{ 'NumberUsers' } = "10";
+    $params->{ 'UserType' } = "";
 
     return $app->build_page( $tmpl, $params );
 }
