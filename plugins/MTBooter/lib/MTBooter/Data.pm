@@ -715,8 +715,9 @@ sub findAuthor($) {
     my $author = MT::Author->load( { name => $username } );
 
     if ($author) {
-
-        return 1;
+	
+		#return 1;
+        return $author;
 
     }
     else {
@@ -780,14 +781,15 @@ sub create_user_set_for_blog {
 				my $username = $g_UserPrefix . $j;
 				#get random first name
 				my $FirstName = getFirstName();
-				#create user
-				if ( ! findAuthor($username) ) 
+				
+				my $author = findAuthor($username) ;
+				if ( ! $author ) 
 				{
-					my $author = create_user( $username, "$FirstName $userType" );				
-					#create association
-					require MT::Association;
-					MT::Association->link( $author => $role => $blog );
+					$author = create_user( $username, "$FirstName $userType" );	
 				}
+				#create association	
+				require MT::Association;
+				MT::Association->link( $author => $role => $blog );
 			}
 		}
 		else
