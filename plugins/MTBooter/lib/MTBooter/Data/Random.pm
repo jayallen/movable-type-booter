@@ -7,7 +7,7 @@ use warnings;
 use base qw( Exporter Class::ErrorHandler );
 use vars qw( @EXPORT );
 
-@EXPORT = qw(random_date get_random_tags random_rating random_user random_comment random_number_times 
+@EXPORT = qw(random_date get_random_tags random_rating random_user random_comment random_number_times
 random_top_level_category random_category random_subcategory random_blog_name);
 
 sub random_date {
@@ -80,10 +80,10 @@ sub random_user {
 sub random_comment {
     require MT::Comment;
     my ($blog_id, $entry_id, $author_id, $author_display_name, $comment_parent_id) = @_;
-	
+
     my @comment_texts = ();
     my $comment = MT::Comment->new;
-	
+
     $comment->blog_id($blog_id);
     $comment->entry_id($entry_id);
 
@@ -102,7 +102,7 @@ sub random_comment {
     $wabby->add($seedtext);
     @comment_texts = ( $wabby->spew );
     my $comment_text = $comment_texts[ rand( scalar @comment_texts ) ];
-	
+
     if ( $not_anon_comment != 1 ) {
         $comment->commenter_id($author_id);
         $comment->author($author_display_name);
@@ -138,7 +138,7 @@ sub random_comment {
       or die $comment->errstr;
 
     my $comment_id = $comment->id;
-	
+
     my $comment_replies = random_number_times(1);
 
     #some comments should have replies--but only published ones
@@ -242,14 +242,14 @@ sub random_blog_name {
     my $seedtext = $plugin->get_config_value ('SeedText', 'system');
 
     $wabby->add($seedtext);
-	
+
     my $blog_name = ( $wabby->spew );
-	
-	#$blog_name = ucfirst($blog_name);
-	$blog_name = uc($blog_name);
+
+    #$blog_name = ucfirst($blog_name);
+    $blog_name = uc($blog_name);
     $blog_name=~ s/(\w+)/\u\L$1/g;
-	
-	$blog_name .= " Blog";
+
+    $blog_name .= " Blog";
 
     return $blog_name;
 }

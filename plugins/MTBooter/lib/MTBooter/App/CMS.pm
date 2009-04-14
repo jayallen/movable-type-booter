@@ -111,7 +111,7 @@ sub menu_create_categories {
     my $plugin = MT::Plugin::MTBooter->instance;
 
     my $blog_id = $app->{ query }->param('blog_id');
-	
+
     #actaully create the categories
 
     create_categories($blog_id);
@@ -214,7 +214,7 @@ sub menu_create_user_set {
     my $blog_id = $app->{ query }->param('blog_id');
     my $NumberUsers = $app->{ query }->param('NumberUsers');
     my $UserType = $app->{ query }->param('UserType');
-	
+
 
     create_user_set_for_blog($blog_id,$NumberUsers,$UserType);
 
@@ -237,32 +237,32 @@ sub menu_create_user_set {
 
 sub menu_create_custom_fields {
     my $app = shift;
-	
+
     my $plugin = MT::Plugin::MTBooter->instance;
 
     my $blog_id = $app->{ query }->param('blog_id');
-	
-	my $tmpl = $plugin->load_tmpl('booter_confirm.tmpl');
+
+    my $tmpl = $plugin->load_tmpl('booter_confirm.tmpl');
 
     my $param;
-	
-	eval { require CustomFields::Field }; 
-	
-	if ($@) { 
-	  $param->{ 'confirm_message' } =
-      "Custom Fields are not available in this version of Movable Type.";	 
-      $param->{ 'confirm_link' } = "Dashboard"; 
-	  $param->{ 'confirm_mode' } = "dashboard";	   
-	} else {
+
+    eval { require CustomFields::Field };
+
+    if ($@) {
+      $param->{ 'confirm_message' } =
+      "Custom Fields are not available in this version of Movable Type.";
+      $param->{ 'confirm_link' } = "Dashboard";
+      $param->{ 'confirm_mode' } = "dashboard";
+    } else {
       create_custom_fields_for_blog($app);
-	  
-	  $param->{ 'confirm_message' } =
+
+      $param->{ 'confirm_message' } =
       "Custom Fields for this blog have been created.";
       $param->{ 'confirm_link' } = "Custom Fields";
       $param->{ 'confirm_mode' } = "list_field";
-	}
-	
-    $param->{ 'blog_id' } = $blog_id;	
+    }
+
+    $param->{ 'blog_id' } = $blog_id;
 
     return $app->build_page( $tmpl, $param );
 }
@@ -384,7 +384,7 @@ sub menu_add_categories {
     my $app = shift;
 
     my $plugin = MT::Plugin::MTBooter->instance;
-	
+
     my $blog_id = $app->{ query }->param('blog_id');
 
     add_categories_to_entries($blog_id);
@@ -409,7 +409,7 @@ sub menu_add_trackbacks {
     my $app = shift;
 
     my $plugin = MT::Plugin::MTBooter->instance;
-	
+
     my $blog_id = $app->{ query }->param('blog_id');
 
     add_trackbacks_to_entries($blog_id);
@@ -434,7 +434,7 @@ sub menu_add_assets {
     my $app = shift;
 
     my $plugin = MT::Plugin::MTBooter->instance;
-	
+
     my $blog_id = $app->{ query }->param('blog_id');
 
     add_assets_to_blog($blog_id, 5);
@@ -494,8 +494,8 @@ sub menu_create_blogs {
     my $NumberBlogs = $app->{ query }->param('NumberBlogs');
     my $AddUser = $app->{ query }->param('AddUser');
     my $author_id = $app->{ query }->param('author_id');
-	
-	create_blogs($NumberBlogs, $AddUser);
+
+    create_blogs($NumberBlogs, $AddUser);
 
     my $tmpl = $plugin->load_tmpl('booter_create_blogs.tmpl');
 
@@ -505,7 +505,7 @@ sub menu_create_blogs {
       $NumberBlogs . " blogs created successfully!";
 
     $param->{ 'NumberBlogs' } = $NumberBlogs;
-	$param->{ 'AddUser' } = $AddUser;
+    $param->{ 'AddUser' } = $AddUser;
 
     return $app->build_page( $tmpl, $param );
 }
@@ -516,17 +516,17 @@ sub menu_manage_module_caches {
     my $plugin = MT::Plugin::MTBooter->instance;
 
     my $blog_id = $app->{ query }->param('blog_id');
-	
-	my $cache_list;
-	my $status_message;
-	
-	if (MT->version_number >= 4.15) {
+
+    my $cache_list;
+    my $status_message;
+
+    if (MT->version_number >= 4.15) {
       $cache_list = make_module_cache_list($blog_id);
-	  $status_message = "Here are your blog's cached modules.";
-	} else {
-	  $cache_list = "";
-	  $status_message = "This feature isn't relevant for versions of MT before 4.15.";
-	}
+      $status_message = "Here are your blog's cached modules.";
+    } else {
+      $cache_list = "";
+      $status_message = "This feature isn't relevant for versions of MT before 4.15.";
+    }
 
     my $tmpl = $plugin->load_tmpl('list_module_caches.tmpl');
 
@@ -543,9 +543,9 @@ sub menu_manage_module_caches {
 
 sub make_module_cache_list {
     my $blog_id = shift;
-	
+
     use MT::Session;
-	use MT::Template;
+    use MT::Template;
 
     my $html =
 "<table width=\"600\" border=\"1\" bordercolor=\"red\" cellpadding=\"10\" cellspacing=\"10\">";
@@ -553,84 +553,84 @@ sub make_module_cache_list {
     $html .= "<tr>";
 
     $html .= "<th class=\"category\"><b>Module</b></th>";
-	$html .= "<th><b>Start</b></th>";
-	$html .= "<th><b>Expire</b></th>";
+    $html .= "<th><b>Start</b></th>";
+    $html .= "<th><b>Expire</b></th>";
     $html .= "<th><b>Exp. Type</b></th>";
     $html .= "<th><b>Interval</b></th>";
-	$html .= "<th><b>Event Type</b></th>";
-	$html .= "<th><b>Use Cache</b></th>";
+    $html .= "<th><b>Event Type</b></th>";
+    $html .= "<th><b>Use Cache</b></th>";
     $html .= "<th>&nbsp;</th>";
-	
-	$html .= "</tr>";
+
+    $html .= "</tr>";
 
     my @CachedModules = MT::Session->load( { kind => 'CO' } );
-	
+
     foreach my $CachedModule (@CachedModules) {
 
         $html .= "<tr class=\"odd\">";
 
         my $session_id  = $CachedModule->id;
-		
-		#determine the name of the module from the session id
-		my @booter = split(/::/, $session_id);
-		my $module_name = $booter[3];
-		
-		#retrieve the template record using the name
-		my $template_module = MT::Template->load( { name => $module_name } );
-		
-		my $cache_session_start = $CachedModule->start;
-		
-		#use DateTime::Format::Epoch;
-		#my $cache_session_start_dt = DateTime->from_epoch(epoch => $cache_session_start);
-		my $cache_session_start_lt = scalar(localtime($cache_session_start));
-		
-		my $cache_expiration_interval = "";
-		my $cache_expire_type = "";
-		my $cache_expire_event = "";
-		my $use_cache = "";
-		my $template_id = 0;
-		my $cache_expire_time = "";
-		my $edit_link = "";
-		
-		if (defined($template_module)) {
-		
-		  $cache_expiration_interval = $template_module->meta('cache_expire_interval');	
-		  $cache_expire_type = $template_module->meta('cache_expire_type');	
-		  $cache_expire_event = $template_module->meta('cache_expire_event');
-		  $use_cache = $template_module->meta('use_cache');
-		
-		  $template_id = $template_module->id;
-	
-		  if ($cache_expiration_interval) {
-		    $cache_expire_time = $cache_session_start + $cache_expiration_interval;
-		  
-		    $cache_expire_time = scalar(localtime($cache_expire_time));
-		  } else {
-		    $cache_expire_time = "N/A";
-		  }
-		
-		  $edit_link =
+
+        #determine the name of the module from the session id
+        my @booter = split(/::/, $session_id);
+        my $module_name = $booter[3];
+
+        #retrieve the template record using the name
+        my $template_module = MT::Template->load( { name => $module_name } );
+
+        my $cache_session_start = $CachedModule->start;
+
+        #use DateTime::Format::Epoch;
+        #my $cache_session_start_dt = DateTime->from_epoch(epoch => $cache_session_start);
+        my $cache_session_start_lt = scalar(localtime($cache_session_start));
+
+        my $cache_expiration_interval = "";
+        my $cache_expire_type = "";
+        my $cache_expire_event = "";
+        my $use_cache = "";
+        my $template_id = 0;
+        my $cache_expire_time = "";
+        my $edit_link = "";
+
+        if (defined($template_module)) {
+
+          $cache_expiration_interval = $template_module->meta('cache_expire_interval');
+          $cache_expire_type = $template_module->meta('cache_expire_type');
+          $cache_expire_event = $template_module->meta('cache_expire_event');
+          $use_cache = $template_module->meta('use_cache');
+
+          $template_id = $template_module->id;
+
+          if ($cache_expiration_interval) {
+            $cache_expire_time = $cache_session_start + $cache_expiration_interval;
+
+            $cache_expire_time = scalar(localtime($cache_expire_time));
+          } else {
+            $cache_expire_time = "N/A";
+          }
+
+          $edit_link =
 "<a href=\"mt.cgi?__mode=view&_type=template&id=$template_id&blog_id=$blog_id\" target=\"_top\">Edit</a>";
 
         } else {
-		  $cache_expiration_interval = "N/A";
-		}
-		
-        $html .= "<td bgcolor=\"#dddddd\">$module_name</td>";
-		$html .= "<td bgcolor=\"#dddddd\">$cache_session_start_lt</td>";
-		$html .= "<td bgcolor=\"#dddddd\">$cache_expire_time</td>";
-		$html .= "<td bgcolor=\"#dddddd\">$cache_expire_type</td>";
-        $html .= "<td bgcolor=\"#dddddd\">$cache_expiration_interval</td>";
-		$html .= "<td bgcolor=\"#dddddd\">$cache_expire_event</td>";
-		$html .= "<td bgcolor=\"#dddddd\">$use_cache</td>";
-		$html .= "<td bgcolor=\"#dddddd\">$edit_link</td>";
+          $cache_expiration_interval = "N/A";
+        }
 
-        $html .= "</tr>";		
-    }	
-	
-	$html .= "</table>";
+        $html .= "<td bgcolor=\"#dddddd\">$module_name</td>";
+        $html .= "<td bgcolor=\"#dddddd\">$cache_session_start_lt</td>";
+        $html .= "<td bgcolor=\"#dddddd\">$cache_expire_time</td>";
+        $html .= "<td bgcolor=\"#dddddd\">$cache_expire_type</td>";
+        $html .= "<td bgcolor=\"#dddddd\">$cache_expiration_interval</td>";
+        $html .= "<td bgcolor=\"#dddddd\">$cache_expire_event</td>";
+        $html .= "<td bgcolor=\"#dddddd\">$use_cache</td>";
+        $html .= "<td bgcolor=\"#dddddd\">$edit_link</td>";
+
+        $html .= "</tr>";
+    }
+
+    $html .= "</table>";
 
     return $html;
-}	
+}
 
 1;
