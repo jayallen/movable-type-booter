@@ -10,7 +10,25 @@ use MT;
 use MTBooter::Data::Random;
 use MT::Permission;
 
+@EXPORT = qw( create_category create_entries create_demo create_blog create_categories add_forums create_users create_user_set_for_blog
+add_categories_to_entries add_trackbacks_to_entries add_trackback_to_entry add_assets_to_blog create_blogs create_custom_fields_for_blog add_custom_fields_to_blog);
 
+our $g_DefaultPassword = "test";
+our $g_UserPrefix = "testuser"; #Used in create_user_set. Here until textbox is added to input form;
+
+sub add_category_to_entry {
+    #my $class = shift;
+    my ($blog_id, $entry_id, $category_id, $is_primary) = @_;
+
+    require MT::Placement;
+
+    my $place = MT::Placement->new;
+
+    $place->entry_id($entry_id);
+    $place->blog_id($blog_id);
+    $place->category_id($category_id);
+    $place->is_primary($is_primary);
+    #$place->save or return $class->error ("Error saving placement: " . $place->errstr);
     $place->save
       or die $place->errstr;
 }
@@ -688,7 +706,7 @@ sub getLastName {
 
 }
 
-sub findAuthor($) {
+sub findAuthor {
 
     my $username = shift;
 
