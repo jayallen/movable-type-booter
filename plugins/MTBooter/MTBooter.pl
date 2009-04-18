@@ -6,7 +6,7 @@ package MT::Plugin::MTBooter;
 use strict;
 use base qw( MT::Plugin );
 
-our $VERSION = '0.14.0';
+our $VERSION = '0.14.1';
 
 my $dickens = "It was the best of times, it was the worst of times,
 it was the age of wisdom, it was the age of foolishness,
@@ -124,164 +124,173 @@ it is a far, far better rest that I go to than I have ever known. Dotcom.";
 my $plugin = MT::Plugin::MTBooter->new({
     key             => 'MTBooter',
     id              => 'MTBooter',
-	name            => "MTBooter",
-	version         => $VERSION,
-	description     => "<MT_TRANS phrase=\"QA/debugging tool for Movable Type\">",
-	author_name     => "Chris Ernest Hall",
-	author_link     => "http://djchall.vox.com/",
-	plugin_link     => "http://djchall.com/plugins/",
-	doc_link        => "",
-	system_config_template => ( MT->version_number < 4 ? 'booter_config_mt3.tmpl' : 'booter_config.tmpl' ),
-	settings => new MT::PluginSettings([
+    name            => "MTBooter",
+    version         => $VERSION,
+    description     => "<MT_TRANS phrase=\"QA/debugging tool for Movable Type\">",
+    author_name     => "Chris Ernest Hall",
+    author_link     => "http://djchall.vox.com/",
+    plugin_link     => "http://djchall.com/plugins/",
+    doc_link        => "",
+    system_config_template => ( MT->version_number < 4 ? 'booter_config_mt3.tmpl' : 'booter_config.tmpl' ),
+    settings => new MT::PluginSettings([
             ['NumberYears', { Default => 5 }],
-			['NumberTags', { Default => 5 }],
-			['SeedText', { Default => $dickens }]
-	])
+            ['NumberTags', { Default => 5 }],
+            ['SeedText', { Default => $dickens }]
+    ])
 });
 
 MT->add_plugin($plugin);
 
 sub init_registry {
   my $plugin = shift;
-  
+
   $plugin->registry({
-	applications=> {
-	  cms => {
-	    menus => {
-		  'create:booter' => {
-		    label => 'Entries',
-			dialog => 'show_dialog',
-			order => 301,
-			args => { _type => "show_dialog" },
-			permission => 'administer_blog',
-			view => "blog",
-		  },
-		  'create:booter3' => {
-		    label => 'Categories',
-			dialog => 'menu_create_categories',
-			order => 302,
-			args => { _type => "menu_create_categories" },
-			permission => 'administer_blog',
-			view => "blog",
-		  },		  
-		  'create:booter2' => {
-		    label => 'Demo Site',
-			dialog => 'create_demo',
-			args => { _type => "create_demo" },
-			order => 301,
-			permission => 'administer',
-			view => "system",
-	      },
-		  'create:booter5' => {
-		    label => 'Test Blog',
-			dialog => 'menu_create_test_blog',
-			args => { _type => "menu_create_test_blog" },
-			order => 302,
-			permission => 'administer',
-			view => "system",
-	      },
-		  'create:booter9' => {
-		    label => 'Baseline Blog',
-			dialog => 'menu_create_baseline_blog',
-			args => { _type => "menu_create_baseline_blog" },
-			order => 303,
-			permission => 'administer',
-			view => "system",
-	      },
-		  'create:booter4' => {
-		    label => 'Users',
-			dialog => 'menu_create_users',
-			order => 304,
-			args => { _type => "menu_create_users" },
-			permission => 'administer',
-			view => "system",
-		  },
-		  'create:booter12' => {
-		    label => 'Blogs',
-			dialog => 'show_blogs_dialog',
-			order => 305,
-			args => { _type => "show_blogs_dialog" },
-			permission => 'administer',
-			view => "system",
-		  },
-		  'create:booter6' => {
-		    label => 'User Set',
-			dialog => 'menu_create_user_set',
-			order => 306,
-			args => { _type => "menu_create_user_set" },
-			permission => 'administer',
-			view => "blog",
-		  },
-		  'create:booter7' => {
-		    label => 'Add Categories',
-			dialog => 'menu_add_categories',
-			order => 307,
-			args => { _type => "menu_add_categories" },
-			permission => 'administer',
-			view => "blog",
-		  },
-		  'create:booter8' => {
-		    label => 'Add Trackbacks',
-			dialog => 'menu_add_trackbacks',
-			order => 308,
-			args => { _type => "menu_add_trackbacks" },
-			permission => 'administer',
-			view => "blog",
-		  },		  
-		  'create:booter10' => {
-		    label => 'Add Assets',
-			dialog => 'menu_add_assets',
-			order => 309,
-			args => { _type => "menu_add_assets" },
-			permission => 'administer',
-			view => "blog",
-		  },		  
-		  'manage:booter11' => {
-		    label => 'Template Mappings',
-			dialog => 'menu_manage_template_mappings',
-			order => 10000,
-			args => { _type => "menu_manage_template_mappings" },
-			permission => 'administer',
-			view => "blog",
-		  },		  
-		  'manage:booter14' => {
-		    label => 'Module Caches',
-			dialog => 'menu_manage_module_caches',
-			order => 11000,
-			args => { _type => "menu_manage_module_caches" },
-			permission => 'administer',
-			view => "blog",
-		  },	
-		  'create:booter15' => {
+    applications=> {
+      cms => {
+        menus => {
+          'create:booter' => {
+            label => 'Entries',
+            dialog => 'show_dialog',
+            order => 301,
+            args => { _type => "show_dialog" },
+            permission => 'administer_blog',
+            view => "blog",
+          },
+          'create:booter3' => {
+            label => 'Categories',
+            dialog => 'menu_create_categories',
+            order => 302,
+            args => { _type => "menu_create_categories" },
+            permission => 'administer_blog',
+            view => "blog",
+          },
+          'create:booter2' => {
+            label => 'Demo Site',
+            dialog => 'create_demo',
+            args => { _type => "create_demo" },
+            order => 301,
+            permission => 'administer',
+            view => "system",
+          },
+          'create:booter5' => {
+            label => 'Test Blog',
+            dialog => 'menu_create_test_blog',
+            args => { _type => "menu_create_test_blog" },
+            order => 302,
+            permission => 'administer',
+            view => "system",
+          },
+          'create:booter9' => {
+            label => 'Baseline Blog',
+            dialog => 'menu_create_baseline_blog',
+            args => { _type => "menu_create_baseline_blog" },
+            order => 303,
+            permission => 'administer',
+            view => "system",
+          },
+          'create:booter4' => {
+            label => 'Users',
+            dialog => 'menu_create_users',
+            order => 304,
+            args => { _type => "menu_create_users" },
+            permission => 'administer',
+            view => "system",
+          },
+          'create:booter12' => {
+            label => 'Blogs',
+            dialog => 'show_blogs_dialog',
+            order => 305,
+            args => { _type => "show_blogs_dialog" },
+            permission => 'administer',
+            view => "system",
+          },
+          'create:booter6' => {
+            label => 'User Set',
+            dialog => 'menu_create_user_set',
+            order => 306,
+            args => { _type => "menu_create_user_set" },
+            permission => 'administer',
+            view => "blog",
+          },
+          'create:booter7' => {
+            label => 'Add Categories',
+            dialog => 'menu_add_categories',
+            order => 307,
+            args => { _type => "menu_add_categories" },
+            permission => 'administer',
+            view => "blog",
+          },
+          'create:booter8' => {
+            label => 'Add Trackbacks',
+            dialog => 'menu_add_trackbacks',
+            order => 308,
+            args => { _type => "menu_add_trackbacks" },
+            permission => 'administer',
+            view => "blog",
+          },
+          'create:booter10' => {
+            label => 'Add Assets',
+            dialog => 'menu_add_assets',
+            order => 309,
+            args => { _type => "menu_add_assets" },
+            permission => 'administer',
+            view => "blog",
+          },
+          'manage:booter11' => {
+            label => 'Template Mappings',
+            dialog => 'menu_manage_template_mappings',
+            order => 10000,
+            args => { _type => "menu_manage_template_mappings" },
+            permission => 'administer',
+            view => "blog",
+          },
+          'manage:booter14' => {
+            label => 'Module Caches',
+            dialog => 'menu_manage_module_caches',
+            order => 11000,
+            args => { _type => "menu_manage_module_caches" },
+            permission => 'administer',
+            view => "blog",
+          },
+          'create:booter15' => {
             label => 'Custom Field Set',
-			dialog => 'menu_create_custom_fields',
-			order => 310,
-			args => { _type => "menu_create_custom_fields" },
-			permission => 'administer',
-			view => "blog",
-		  }
-		}
-	  },
-	},
-	 methods => {
-	    show_dialog => '$MTBooter::MTBooter::App::CMS::show_dialog',
-		menu_create_entries => '$MTBooter::MTBooter::App::CMS::menu_create_entries', 
-		create_demo => '$MTBooter::MTBooter::App::CMS::create_demo', 
-		menu_create_test_blog => '$MTBooter::MTBooter::App::CMS::menu_create_test_blog', 
-		menu_create_categories => '$MTBooter::MTBooter::App::CMS::menu_create_categories', 
-		menu_create_users => '$MTBooter::MTBooter::App::CMS::menu_create_users',
-		show_blogs_dialog => '$MTBooter::MTBooter::App::CMS::show_blogs_dialog',
-		menu_create_blogs => '$MTBooter::MTBooter::App::CMS::menu_create_blogs',
-		menu_create_user_set => '$MTBooter::MTBooter::App::CMS::menu_create_user_set',
-		menu_add_categories => '$MTBooter::MTBooter::App::CMS::menu_add_categories',
-		menu_add_trackbacks => '$MTBooter::MTBooter::App::CMS::menu_add_trackbacks',
-		menu_add_assets => '$MTBooter::MTBooter::App::CMS::menu_add_assets',
-		menu_create_custom_fields => '$MTBooter::MTBooter::App::CMS::menu_create_custom_fields',
-		menu_manage_template_mappings => '$MTBooter::MTBooter::App::CMS::menu_manage_template_mappings',
-		menu_manage_module_caches => '$MTBooter::MTBooter::App::CMS::menu_manage_module_caches',
-		menu_create_baseline_blog => '$MTBooter::MTBooter::App::CMS::menu_create_baseline_blog',
-	 },
-  });  
+            dialog => 'menu_create_custom_fields',
+            order => 310,
+            args => { _type => "menu_create_custom_fields" },
+            permission => 'administer',
+            view => "blog",
+          },
+            'create:booter16' => {
+            label => 'Create User Set',
+            dialog => 'show_create_userset_dialog',
+            order => 311,
+            args => { _type => "show_create_userset_dialog" },
+            permission => 'administer',
+            view => "blog",
+          },
+        },
+      },
+    },
+     methods => {
+        show_dialog => '$MTBooter::MTBooter::App::CMS::show_dialog',
+        menu_create_entries => '$MTBooter::MTBooter::App::CMS::menu_create_entries',
+        create_demo => '$MTBooter::MTBooter::App::CMS::create_demo',
+        menu_create_test_blog => '$MTBooter::MTBooter::App::CMS::menu_create_test_blog',
+        menu_create_categories => '$MTBooter::MTBooter::App::CMS::menu_create_categories',
+        menu_create_users => '$MTBooter::MTBooter::App::CMS::menu_create_users',
+        show_blogs_dialog => '$MTBooter::MTBooter::App::CMS::show_blogs_dialog',
+        menu_create_blogs => '$MTBooter::MTBooter::App::CMS::menu_create_blogs',
+        menu_create_user_set => '$MTBooter::MTBooter::App::CMS::menu_create_user_set',
+        menu_add_categories => '$MTBooter::MTBooter::App::CMS::menu_add_categories',
+        menu_add_trackbacks => '$MTBooter::MTBooter::App::CMS::menu_add_trackbacks',
+        menu_add_assets => '$MTBooter::MTBooter::App::CMS::menu_add_assets',
+        menu_create_custom_fields => '$MTBooter::MTBooter::App::CMS::menu_create_custom_fields',
+        menu_manage_template_mappings => '$MTBooter::MTBooter::App::CMS::menu_manage_template_mappings',
+        menu_manage_module_caches => '$MTBooter::MTBooter::App::CMS::menu_manage_module_caches',
+        menu_create_baseline_blog => '$MTBooter::MTBooter::App::CMS::menu_create_baseline_blog',
+        show_create_userset_dialog => '$MTBooter::MTBooter::App::CMS::show_create_userset_dialog',
+     },
+  });
 
 }
 
@@ -289,7 +298,7 @@ sub init_app {
     my $plugin = shift;
     $plugin->SUPER::init_app(@_);
     my ($app) = @_;
-	
+
     return unless $app->isa('MT::App::CMS');
 }
 

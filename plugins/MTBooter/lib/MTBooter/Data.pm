@@ -10,24 +10,9 @@ use MT;
 use MTBooter::Data::Random;
 use MT::Permission;
 
-@EXPORT = qw( create_category create_entries create_demo create_blog create_categories add_forums create_users create_user_set_for_blog 
-add_categories_to_entries add_trackbacks_to_entries add_trackback_to_entry add_assets_to_blog create_blogs create_custom_fields_for_blog add_custom_fields_to_blog);
 
-sub add_category_to_entry {
-    #my $class = shift;
-    my ($blog_id, $entry_id, $category_id, $is_primary) = @_;
-
-    require MT::Placement;
-
-    my $place = MT::Placement->new;
-
-    $place->entry_id($entry_id);
-    $place->blog_id($blog_id);
-    $place->category_id($category_id);
-    $place->is_primary($is_primary);
-    #$place->save or return $class->error ("Error saving placement: " . $place->errstr);
-	$place->save
-	  or die $place->errstr;
+    $place->save
+      or die $place->errstr;
 }
 
 sub create_category {
@@ -40,11 +25,11 @@ sub create_category {
     $cat->blog_id($blog_id);
     $cat->label('temp');
     #$cat->save or return $class->errstr ("Error saving category: " . $cat->errstr);
-	$cat->save
-	  or die $cat->errstr;
+    $cat->save
+      or die $cat->errstr;
 
     my $cat_id = $cat->id;
-    
+
     if ($parent_cat_id) {
         #make the category a sub-category
         my $parent_cat = MT::Category->load($parent_cat_id);
@@ -64,9 +49,9 @@ sub create_category {
     }
 
     #$cat->save or return $class->errstr ("Error saving category: " . $cat->errstr);
-	$cat->save
-	  or die $cat->errstr;
-	
+    $cat->save
+      or die $cat->errstr;
+
     return $cat->id;
 }
 
@@ -75,17 +60,17 @@ sub create_entries {
     #how can this be adapted to also create Pages? is it just a flag of MT::Entries?
     # my $class = shift;
     my ($blog_id, $EntryType, $NumberEntries, $NumberYears, $NumberTags, $RateEntries, $RatingType, $AddComments, $AddCategories, $AddCFData) = @_;
-	
+
     $EntryType = lc $EntryType;
-	
+
     my $entry_class = MT->version_number < 4 ? 'MT::Entry' : MT->model($EntryType);
-	
-	my $TotalComments = 0;
+
+    my $TotalComments = 0;
 
     #actually create the entries
     for ( 1..$NumberEntries ) {
         my $entry = $entry_class->new;
-		#my $entry = MT::Entry->new;
+        #my $entry = MT::Entry->new;
 
         $entry->blog_id($blog_id);
         $entry->status( MT::Entry::RELEASE() );
@@ -151,7 +136,7 @@ sub create_entries {
         #add category to some entries, if AddCategories is set
         if ($AddCategories) {
           add_categories_to_entry($blog_id, $entry_id);
-		}
+        }
 
         #add custom field data to entries, if AddCFData is set
         if ($AddCFData) {
@@ -205,7 +190,7 @@ sub create_entries {
 
         $entry->save
           or die $entry->errstr;
-		  
+
         print STDERR "Alert! Entry $entry_id has been created!\n";
     }
 
@@ -215,7 +200,7 @@ sub create_entries {
 sub add_categories_to_entry {
   my $blog_id = shift;
   my $entry_id = shift;
-  
+
   my $NumberCategories = random_number_times(3);
 
   for ( my $m = 0 ; $m < $NumberCategories ; $m++ ) {
@@ -348,8 +333,8 @@ sub create_blog {
     if ($create_entries) {
         create_entries( $blog_id, "Entry", 10, 1, 5, 0, 0, 1, 20 );
     }
-	
-	print STDERR "Alert! Blog \"$BlogName\" has been created!\n";
+
+    print STDERR "Alert! Blog \"$BlogName\" has been created!\n";
 
     return $blog_id;
 }
@@ -633,7 +618,7 @@ sub create_user {
 
     $author->email($email);
 
-    $author->set_password('booter27');
+    $author->set_password($g_DefaultPassword);
 
     $author->save
 
@@ -703,18 +688,18 @@ sub getLastName {
 
 }
 
-sub findAuthor() {
+sub findAuthor($) {
 
     my $username = shift;
 
     #try to load author with that nickname
     use MT::Author;
-
     my $author = MT::Author->load( { name => $username } );
 
     if ($author) {
 
-        return 1;
+        #return 1;
+        return $author;
 
     }
     else {
@@ -724,13 +709,21 @@ sub findAuthor() {
     }
 
 }
+sub trim($)
+{
+    # this takes a reference
+    my $string = shift;
+    $$string =~ s/^\s+|\s+$//g;
+    return $string;
+}
 
 sub create_user_set_for_blog {
 
     my $blog_id = shift;
+    my $numberUsers = shift;
+    my $userType = shift;
 
     #load up the blog
-
     use MT::Blog;
 
     my $blog = MT::Blog->load($blog_id);
@@ -743,89 +736,132 @@ sub create_user_set_for_blog {
         @Roles = MT::Role->load();
     }
 
+    if ($numberUsers)
+    {
+        trim(\$numberUsers)
+    }
+    else
+    {
+        $numberUsers = @Roles;
+    }
+    if ($userType)
+    {
+        trim(\$userType)
+    }
+
     # FIXME: create an alternative user set for MT 3.x
 
-    #iterate through the roles and create a user for each
+    # create $numberUsers, if undefined then a user for each role is created
+    if($userType && $userType ne "") # i can't remember which
+    {
+        require MT::Role;
+        my $role = MT::Role->load( { name => $userType } );
+        if ($role)
+        {
+            for ( my $j = 0; $j < $numberUsers; $j++)
+            {
+                my $username = $g_UserPrefix . $j;
+                #get random first name
+                my $FirstName = getFirstName();
 
-    foreach my $role (@Roles) {
-
-        my $role_name = $role->name;
-
-        my $username = lc($role_name);
-
-        $username =~ s/ //;
-
-        #get random first name
-        my $FirstName = getFirstName();
-
-        #create user
-        my $author = create_user( $username, "$FirstName $role_name" );
-
-        #create association
-        require MT::Association;
-        MT::Association->link( $author => $role => $blog );
+                my $author = findAuthor($username) ;
+                if ( ! $author )
+                {
+                    $author = create_user( $username, "$FirstName $userType" );
+                }
+                #create association
+                require MT::Association;
+                MT::Association->link( $author => $role => $blog );
+            }
+        }
+        else
+        {
+            #how do i raise an error here?
+        }
     }
-}
+    else
+    {
+        foreach my $role (@Roles)
+        {
+            my $role_name = $role->name;
+            my $username = lc($role_name);
+            $username =~ s/ //;
+
+            #get random first name
+            my $FirstName = getFirstName();
+
+            #create user
+            my $author = create_user( $username, "$FirstName $role_name" );
+
+            #create association
+            require MT::Association;
+            MT::Association->link( $author => $role => $blog );
+        }
+    }
+
+} #end sub
+
+
 
 sub add_categories_to_entries {
   my $blog_id = shift;
-  
+
   #get all entries for that blog
   my @Entries = MT::Entry->load( { blog_id => $blog_id });
-  
+
   #iterate through all entries for that blog and add category placements
   foreach my $entry (@Entries) {
     my $entry_id = $entry->id;
-	
+
     print STDERR "Adding categories to entry $entry_id\n";
-	
-	add_categories_to_entry($blog_id, $entry_id);
+
+    add_categories_to_entry($blog_id, $entry_id);
   }
 }
 
 sub add_trackbacks_to_entries {
   my $blog_id = shift;
-  
+
   #get all entries for that blog
   my @Entries = MT::Entry->load( { blog_id => $blog_id });
-  
+
   #iterate through all entries for that blog and add pings
   foreach my $entry (@Entries) {
     my $entry_id = $entry->id;
-	
-	#add trackbacks to only one quarter of entries
-	my $add_ping = random_number_times(4);
-	
-	if ($add_ping == 1) {
+
+    #add trackbacks to only one quarter of entries
+    my $add_ping = random_number_times(4);
+
+    if ($add_ping == 1) {
       print STDERR "Adding trackbacks to entry $entry_id\n";
-	
-	  add_trackback_to_entry($entry_id);
-	}
+
+      add_trackback_to_entry($entry_id);
+    }
   }
 }
 
 sub add_trackback_to_entry {
   my $entry_id = shift;
-  
+
   my $entry = MT::Entry->load($entry_id);
-  
+
   my $tb = $entry->trackback;
-  
+
   if (!$tb) {
     #set entry to allow pings
-	$entry->allows_pings(1);
-	 
+    $entry->allows_pings(1);
+
     $entry->save
-      or die $entry->errstr;	
+      or die $entry->errstr;
 
     $tb = $entry->trackback;
   }
-  
+
   my $ping = MT::TBPing->new;
-  
+
   $ping->blog_id($tb->blog_id);
   $ping->tb_id($tb->id);
-  
+
   $ping->title('O HAI');
   $ping->excerpt('This is from a TrackBack ping.');
   $ping->source_url('http://www.foo.com/bar');
@@ -848,60 +884,60 @@ sub add_assets_to_blog {
   for ( 1..$NumberAssets ) {
 
     my $asset = MT::Asset::Image->new;
-	
-	$asset->blog_id($blog_id);
-	$asset->label('Fozboot!');
-	$asset->url('http://fozboot.com/booter.jpg');
-	$asset->description('This is a picture of the beloved Booter cat.');
-	$asset->file_name('booter.jpg');
-	
+
+    $asset->blog_id($blog_id);
+    $asset->label('Fozboot!');
+    $asset->url('http://fozboot.com/booter.jpg');
+    $asset->description('This is a picture of the beloved Booter cat.');
+    $asset->file_name('booter.jpg');
+
     $asset->save
-      or die $asset->errstr;	
-  
+      or die $asset->errstr;
+
   }
 }
 
 sub create_blogs {
     my $NumberBlogs = shift;
-	my $AddUser = shift;
-	
-	my $role;
-	
-	if (MT->version_number >= 4 && $AddUser) {
-	  require MT::Role;
-	  $role = MT::Role->load( { name => 'Blog Administrator' });
-	}
-	
+    my $AddUser = shift;
+
+    my $role;
+
+    if (MT->version_number >= 4 && $AddUser) {
+      require MT::Role;
+      $role = MT::Role->load( { name => 'Blog Administrator' });
+    }
+
     #create the blogs
     if ($NumberBlogs) {
-	  for ( 1..$NumberBlogs ) {
-	    #generate random blog name - to do
-	    my $BlogName = random_blog_name();
-	  
-	    my $blog_id = create_blog ($BlogName, '', 'mt_blog', 1, 1);
-		
-		#create user to be administrator of that blog, if necessary
-		if ($AddUser) {
-		  #create user
-		  my $username = createUsername($BlogName);
-		  
-		  my $author = create_user($username, $BlogName);
-		  
-		  #make them admin on that blog
-		  #$author = MT::Author->load($author_id);
-		  
+      for ( 1..$NumberBlogs ) {
+        #generate random blog name - to do
+        my $BlogName = random_blog_name();
+
+        my $blog_id = create_blog ($BlogName, '', 'mt_blog', 1, 1);
+
+        #create user to be administrator of that blog, if necessary
+        if ($AddUser) {
+          #create user
+          my $username = createUsername($BlogName);
+
+          my $author = create_user($username, $BlogName);
+
+          #make them admin on that blog
+          #$author = MT::Author->load($author_id);
+
           if (MT->version_number >= 4) {
             require MT::Role;
-			
+
             #my $role = MT::Role->load(1);
-		    my $blog = MT::Blog->load($blog_id);
-			
-			require MT::Association;
-		  
-		    MT::Association->link( $author => $role => $blog );			
-	      }
-		}
-	  }
+            my $blog = MT::Blog->load($blog_id);
+
+            require MT::Association;
+
+            MT::Association->link( $author => $role => $blog );
+          }
+        }
+      }
     }
 }
 
@@ -916,7 +952,7 @@ sub create_custom_fields_for_blog {
 sub add_custom_fields_to_blog {
     my ($blog_id) = @_;
 
-	eval { require CustomFields::Field };
+    eval { require CustomFields::Field };
 
     #for each object in the system, create all possible blog-level custom fields for that object--first, for entries
 
@@ -1023,7 +1059,7 @@ sub add_cf_data_to_entry {
         require CustomFields::Field;
         require CustomFields::Util;
     };
-	
+
     my %terms;
 
     $terms{ blog_id } = $blog_id;
