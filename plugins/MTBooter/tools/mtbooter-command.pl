@@ -30,13 +30,13 @@ my $result = GetOptions("blog_id=i" => \$blog_id,
                         "entries=i" => \$entries,
                         "blogs=i"   => \$blogs,
                         "years=i"   => \$years,
-						"users=i"   => \$users,
+                        "users=i"   => \$users,
                         "assets=i"  => \$assets,
                         "addcats"   => \$addcats,
                         "addpings"  => \$addpings,
                         "addassets" => \$addassets,
                         "addcf"     => \$addcf,
-						"addusers"     => \$addusers,
+                        "addusers"     => \$addusers,
 );
 
 if ($addcf) {
@@ -58,28 +58,28 @@ if ($blogs) {
 
 if ($addcats) {
   print "Now adding categories to entries in blog_id $blog_id\n";
-  
+
   add_categories_to_entries($blog_id);
 }
 
 if ($addpings) {
   print "Now adding pings to entries in blog_id $blog_id\n";
-  
+
   add_trackbacks_to_entries($blog_id);
 }
 
 if ($addassets) {
   print "Now adding assets to blog with blog_id $blog_id\n";
-  
+
   add_assets_to_blog($blog_id, $assets);
 }
 
 if ($addusers) {
   print "Now adding users!\n";
-  
+
   create_users($users);
 }
 
-#example of usage: 
+#example of usage:
 
 # perl tools/mtbooter-command.pl --blog_id 1 --entries 100 --years 5 --addcats --addpings
