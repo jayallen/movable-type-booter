@@ -706,7 +706,7 @@ sub getLastName {
 
 }
 
-sub findAuthor($) {
+sub findAuthor {
 
     my $username = shift;
 
