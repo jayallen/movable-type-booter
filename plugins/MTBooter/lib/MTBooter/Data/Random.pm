@@ -80,10 +80,24 @@ sub random_user {
 sub random_comment {
     require MT::Comment;
     my ($blog_id, $entry_id, $author_id, $author_display_name, $comment_parent_id) = @_;
+<<<<<<< HEAD:plugins/MTBooter/lib/MTBooter/Data/Random.pm
 
     my @comment_texts = ();
     my $comment = MT::Comment->new;
 
+=======
+<<<<<<< HEAD:plugins/MTBooter/lib/MTBooter/Data/Random.pm
+	
+    my @comment_texts = ();
+    my $comment = MT::Comment->new;
+	
+=======
+
+    my @comment_texts = ();
+    my $comment = MT::Comment->new;
+
+>>>>>>> c82a22ee38599b7675ad7348845c75ea7a21a10d:plugins/MTBooter/lib/MTBooter/Data/Random.pm
+>>>>>>> jaybooter/master:plugins/MTBooter/lib/MTBooter/Data/Random.pm
     $comment->blog_id($blog_id);
     $comment->entry_id($entry_id);
 
@@ -102,7 +116,15 @@ sub random_comment {
     $wabby->add($seedtext);
     @comment_texts = ( $wabby->spew );
     my $comment_text = $comment_texts[ rand( scalar @comment_texts ) ];
+<<<<<<< HEAD:plugins/MTBooter/lib/MTBooter/Data/Random.pm
 
+=======
+<<<<<<< HEAD:plugins/MTBooter/lib/MTBooter/Data/Random.pm
+	
+=======
+
+>>>>>>> c82a22ee38599b7675ad7348845c75ea7a21a10d:plugins/MTBooter/lib/MTBooter/Data/Random.pm
+>>>>>>> jaybooter/master:plugins/MTBooter/lib/MTBooter/Data/Random.pm
     if ( $not_anon_comment != 1 ) {
         $comment->commenter_id($author_id);
         $comment->author($author_display_name);
@@ -138,7 +160,15 @@ sub random_comment {
       or die $comment->errstr;
 
     my $comment_id = $comment->id;
+<<<<<<< HEAD:plugins/MTBooter/lib/MTBooter/Data/Random.pm
 
+=======
+<<<<<<< HEAD:plugins/MTBooter/lib/MTBooter/Data/Random.pm
+	
+=======
+
+>>>>>>> c82a22ee38599b7675ad7348845c75ea7a21a10d:plugins/MTBooter/lib/MTBooter/Data/Random.pm
+>>>>>>> jaybooter/master:plugins/MTBooter/lib/MTBooter/Data/Random.pm
     my $comment_replies = random_number_times(1);
 
     #some comments should have replies--but only published ones
@@ -242,6 +272,24 @@ sub random_blog_name {
     my $seedtext = $plugin->get_config_value ('SeedText', 'system');
 
     $wabby->add($seedtext);
+<<<<<<< HEAD:plugins/MTBooter/lib/MTBooter/Data/Random.pm
+
+=======
+<<<<<<< HEAD:plugins/MTBooter/lib/MTBooter/Data/Random.pm
+	
+>>>>>>> jaybooter/master:plugins/MTBooter/lib/MTBooter/Data/Random.pm
+    my $blog_name = ( $wabby->spew );
+
+    #$blog_name = ucfirst($blog_name);
+    $blog_name = uc($blog_name);
+    $blog_name=~ s/(\w+)/\u\L$1/g;
+<<<<<<< HEAD:plugins/MTBooter/lib/MTBooter/Data/Random.pm
+
+    $blog_name .= " Blog";
+=======
+	
+	$blog_name .= " Blog";
+=======
 
     my $blog_name = ( $wabby->spew );
 
@@ -250,6 +298,8 @@ sub random_blog_name {
     $blog_name=~ s/(\w+)/\u\L$1/g;
 
     $blog_name .= " Blog";
+>>>>>>> c82a22ee38599b7675ad7348845c75ea7a21a10d:plugins/MTBooter/lib/MTBooter/Data/Random.pm
+>>>>>>> jaybooter/master:plugins/MTBooter/lib/MTBooter/Data/Random.pm
 
     return $blog_name;
 }
