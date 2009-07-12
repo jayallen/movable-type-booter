@@ -303,5 +303,3 @@ sub init_app {
 }
 
 sub instance { $plugin }
-
-1;
