@@ -1,4 +1,4 @@
-# MT-Booter, a plugin for Movable Type #
+# MT-Booter, a plugin for Movable Type v4.x and Melody #
  
 MT-Booter is a utility plugin that was originally developed to automate one of the most onerous and inefficient parts of the Movable Type Quality Assurance (QA) testing process: The creation and provisioning of rich test data.
 
